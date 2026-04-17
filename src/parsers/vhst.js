@@ -51,6 +51,8 @@ export function parseVhst(arrayBuffer) {
         service_tag: ssStr(h.serviceTag || ''),
         bios_version: ssStr(h.biosVersion || ''),
         bios_date: '',
+        evc_current: '',
+        evc_max: '',
         nic_count: 0,
         hba_count: 0,
       };

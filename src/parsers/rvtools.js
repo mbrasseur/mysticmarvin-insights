@@ -117,8 +117,9 @@ export function parseRvtools(arrayBuffer) {
   for (const v of vms) v.vcpus = vcpuMap[v.name] || 0;
 
   // Fill ram from vMemory
+  const vmByName = new Map(vms.map(v => [v.name, v]));
   for (const r of sheet('vMemory')) {
-    const vm = vms.find(v => v.name === ssStr(r.VM || ''));
+    const vm = vmByName.get(ssStr(r.VM || ''));
     if (vm) {
       vm.ram_mb = sf(r['Size MiB'] || 0);
       vm.swapped_mb = sf(r['Swapped MiB'] || 0);
@@ -218,7 +219,7 @@ export function parseRvtools(arrayBuffer) {
       name: ssStr(r.Name),
       type: 'dvSwitch',
       version: ssStr(r.Version || ''),
-      num_hosts: siInt(r['Num Ports'] || 0),
+      num_hosts: 0, // RVTools dvSwitch sheet has port count, not host count
       vm_count: 0,
     }));
 
