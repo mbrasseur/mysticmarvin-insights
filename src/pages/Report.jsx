@@ -27,13 +27,14 @@ export default function Report() {
   const [scope, setScope] = useState({ vcenter: null, datacenter: null, cluster: null });
   const [drillVC, setDrillVC] = useState(null);
 
+  const scopedData = useScopedData(rawData, scope);
+
   if (!rawData?.vcenters?.length) return (
     <div style={{ padding: 32, color: 'var(--gray-500)' }}>
       No data found for this project. <a href="#/" style={{ color: 'var(--red)' }}>Go home</a>
     </div>
   );
 
-  const scopedData = useScopedData(rawData, scope);
   const fleet = aggregateFleet(scopedData.vcenters);
 
   if (drillVC) {
