@@ -23,7 +23,7 @@ describe('merge', () => {
   });
 
   it('merges hardware detail from rvtools into vhst hosts', () => {
-    const result = merge(JSON.parse(JSON.stringify(baseVhst)), rvData);
+    const result = merge(baseVhst, rvData);
     expect(result.source).toBe('combined');
     const h1 = result.hosts.find(h => h.name === 'esxi01.lab.local');
     expect(h1.serial).toBe('SN001');
@@ -36,5 +36,12 @@ describe('merge', () => {
     const rv = { hosts: [{ name: 'esxi01.lab.local', serial: 'FUZZY', service_tag: '', bios_version: '', bios_date: '', nic_count: 1, hba_count: 0, evc_current: '', evc_max: '' }] };
     const result = merge(vhst, rv);
     expect(result.hosts[0].serial).toBe('FUZZY');
+  });
+
+  it('preserves zero nic_count from rvtools', () => {
+    const vhst = { source: 'vhst', hosts: [{ name: 'h1', serial: '', service_tag: '', bios_version: '', bios_date: '', nic_count: 99, hba_count: 0 }] };
+    const rv = { hosts: [{ name: 'h1', serial: '', service_tag: '', bios_version: '', bios_date: '', nic_count: 0, hba_count: 0, evc_current: '', evc_max: '' }] };
+    const result = merge(vhst, rv);
+    expect(result.hosts[0].nic_count).toBe(0);
   });
 });

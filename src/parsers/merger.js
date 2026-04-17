@@ -1,34 +1,31 @@
 export function merge(vhstData, rvtoolsData) {
   if (!rvtoolsData) return vhstData;
 
-  const rvHosts = Object.fromEntries(
-    (rvtoolsData.hosts || []).map(h => [h.name, h])
-  );
+  const shortName = s => s.split('.')[0].toLowerCase();
 
-  for (const h of vhstData.hosts || []) {
-    let rv = rvHosts[h.name];
-    if (!rv) {
-      // fuzzy match on short hostname
-      const shortName = h.name.split('.')[0].toLowerCase();
-      for (const [rvName, rvH] of Object.entries(rvHosts)) {
-        if (rvName.split('.')[0].toLowerCase() === shortName) {
-          rv = rvH;
-          break;
-        }
-      }
-    }
-    if (rv) {
-      h.serial = rv.serial || h.serial || '';
-      h.service_tag = rv.service_tag || h.service_tag || '';
-      h.bios_version = rv.bios_version || h.bios_version || '';
-      h.bios_date = rv.bios_date || h.bios_date || '';
-      h.nic_count = rv.nic_count || h.nic_count || 0;
-      h.hba_count = rv.hba_count || h.hba_count || 0;
-      h.evc_current = rv.evc_current || '';
-      h.evc_max = rv.evc_max || '';
-    }
+  // Build lookup maps: exact name and short name
+  const rvByExact = new Map();
+  const rvByShort = new Map();
+  for (const h of rvtoolsData.hosts || []) {
+    rvByExact.set(h.name, h);
+    if (!rvByShort.has(shortName(h.name))) rvByShort.set(shortName(h.name), h);
   }
 
-  vhstData.source = 'combined';
-  return vhstData;
+  const mergedHosts = (vhstData.hosts || []).map(h => {
+    const rv = rvByExact.get(h.name) ?? rvByShort.get(shortName(h.name));
+    if (!rv) return h;
+    return {
+      ...h,
+      serial: rv.serial || h.serial || '',
+      service_tag: rv.service_tag || h.service_tag || '',
+      bios_version: rv.bios_version || h.bios_version || '',
+      bios_date: rv.bios_date || h.bios_date || '',
+      nic_count: rv.nic_count ?? h.nic_count ?? 0,
+      hba_count: rv.hba_count ?? h.hba_count ?? 0,
+      evc_current: rv.evc_current || h.evc_current || '',
+      evc_max: rv.evc_max || h.evc_max || '',
+    };
+  });
+
+  return { ...vhstData, source: 'combined', hosts: mergedHosts };
 }
