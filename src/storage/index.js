@@ -26,7 +26,10 @@ export function createProject(name) {
 }
 
 export function updateProject(id, patch) {
-  const projects = listProjects().map(p => p.id === id ? { ...p, ...patch } : p);
+  const projects = listProjects();
+  const idx = projects.findIndex(p => p.id === id);
+  if (idx === -1) throw new Error(`Project not found: ${id}`);
+  projects[idx] = { ...projects[idx], ...patch };
   localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
 }
 
@@ -37,7 +40,11 @@ export function deleteProject(id) {
 }
 
 export function saveProjectData(projectId, combinedData) {
-  localStorage.setItem(dataKey(projectId), JSON.stringify(combinedData));
+  try {
+    localStorage.setItem(dataKey(projectId), JSON.stringify(combinedData));
+  } catch (e) {
+    throw new Error(`Failed to save project data (storage quota exceeded?): ${e.message}`);
+  }
 }
 
 export function loadProjectData(projectId) {

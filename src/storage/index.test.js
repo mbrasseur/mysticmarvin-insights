@@ -11,6 +11,7 @@ global.localStorage = {
 import {
   listProjects,
   createProject,
+  updateProject,
   deleteProject,
   saveProjectData,
   loadProjectData,
@@ -36,6 +37,17 @@ describe('createProject', () => {
     expect(p.name).toBe('My Project');
     expect(p.id).toBeTruthy();
     expect(listProjects()).toHaveLength(1);
+  });
+});
+
+describe('updateProject', () => {
+  it('updates project fields', () => {
+    const p = createProject('Original');
+    updateProject(p.id, { name: 'Updated' });
+    expect(listProjects().find(x => x.id === p.id).name).toBe('Updated');
+  });
+  it('throws for unknown id', () => {
+    expect(() => updateProject('nonexistent', { name: 'X' })).toThrow('Project not found');
   });
 });
 
