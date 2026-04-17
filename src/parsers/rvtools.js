@@ -1,6 +1,11 @@
 import * as XLSX from 'xlsx';
 import { sf, siInt, ssStr, esxiMajor, countField, ESXI_EOS } from './utils.js';
 
+function vhwNum(s) {
+  const m = String(s).match(/(\d+)/);
+  return m ? parseInt(m[1], 10) : 0;
+}
+
 export function parseRvtools(arrayBuffer) {
   const wb = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array' });
   const sheet = name => wb.Sheets[name]
@@ -245,6 +250,9 @@ export function parseRvtools(arrayBuffer) {
   const total_ds_used_gb = datastores.reduce((s, d) => s + d.used_gb, 0);
   const snap_vms = vms.filter(v => v.snapshots > 0).slice(0, 30);
   const tools_issues = realVms.filter(v => !['toolsOk', '', 'guestToolsCurrent'].includes(v.tools_status));
+  const vhw_legacy = Object.entries(vhw_dist).filter(([k]) => vhwNum(k) <= 11).reduce((s, [, c]) => s + c, 0);
+  const vhw_mid = Object.entries(vhw_dist).filter(([k]) => vhwNum(k) >= 12 && vhwNum(k) <= 15).reduce((s, [, c]) => s + c, 0);
+  const vhw_current = Object.entries(vhw_dist).filter(([k]) => vhwNum(k) >= 19).reduce((s, [, c]) => s + c, 0);
   const thin_vms = vms.filter(v => v.thin_provisioned === 'Yes').length;
   const thick_vms = vms.filter(v => v.thin_provisioned === 'No').length;
   const build_dist = {};
@@ -269,16 +277,16 @@ export function parseRvtools(arrayBuffer) {
       total_storage_gb: Math.round(total_ds_gb * 10) / 10,
       used_storage_gb: Math.round(total_ds_used_gb * 10) / 10,
       storage_used_pct: total_ds_gb > 0 ? Math.round(total_ds_used_gb / total_ds_gb * 1000) / 10 : 0,
-      red_hosts: 0,
-      yellow_hosts: hosts.filter(h => !['GREEN', 'NORMAL', 'OK', 'gray'].includes(h.overall_status)).length,
+      red_hosts: hosts.filter(h => h.overall_status === 'RED').length,
+      yellow_hosts: hosts.filter(h => h.overall_status === 'YELLOW').length,
       snap_vm_count: snap_vms.length,
       tools_issue_count: tools_issues.length,
       swapped_vm_count: realVms.filter(v => v.swapped_mb > 0).length,
       thin_vm_count: thin_vms,
       thick_vm_count: thick_vms,
-      vhw_legacy_count: 0,
-      vhw_mid_count: 0,
-      vhw_current_count: 0,
+      vhw_legacy_count: vhw_legacy,
+      vhw_mid_count: vhw_mid,
+      vhw_current_count: vhw_current,
       vm_to_core_ratio: total_host_cores ? Math.round(total_vms / total_host_cores * 100) / 100 : 0,
       vm_to_host_ratio: total_hosts ? Math.round(total_vms / total_hosts * 100) / 100 : 0,
       vcpu_to_core_ratio: total_host_cores ? Math.round(total_vcpus / total_host_cores * 100) / 100 : 0,
