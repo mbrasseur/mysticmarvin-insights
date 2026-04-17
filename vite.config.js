@@ -6,6 +6,6 @@ export default defineConfig({
   plugins: [react()],
   base: '/mysticmarvin-insights/',
   test: {
-    environment: 'node',
+    environment: 'jsdom',
   },
 })
