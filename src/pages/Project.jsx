@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Upload, FileSpreadsheet, ChevronRight, Trash2, BarChart2 } from 'lucide-react';
 import * as XLSX from 'xlsx';
@@ -48,12 +48,19 @@ export default function Project() {
   const [error, setError] = useState('');
   const [dragOver, setDragOver] = useState(false);
 
-  if (!project) {
-    return <div style={{ padding: 32 }}>Project not found.</div>;
-  }
+  useEffect(() => {
+    if (!project) navigate('/', { replace: true });
+  }, [project, navigate]);
+
+  if (!project) return null;
 
   async function processFile(file) {
-    const buf = await file.arrayBuffer();
+    let buf;
+    try {
+      buf = await file.arrayBuffer();
+    } catch {
+      throw new Error(`${file.name}: failed to read file`);
+    }
     const wb = XLSX.read(buf, { type: 'array' });
     const type = detectFileType(wb.SheetNames);
     if (type === 'unknown') throw new Error(`${file.name}: unrecognized format (not VHST or RVTools)`);
@@ -66,14 +73,19 @@ export default function Project() {
     setParsing(true);
     setError('');
     try {
-      const results = await Promise.all(Array.from(newFiles).map(processFile));
-      const updatedFiles = [...files, ...results];
-      setFiles(updatedFiles);
-      updateProject(projectId, { files: updatedFiles.map(f => ({ name: f.name, type: f.type, vcenterName: f.vcenterName })) });
-      const combined = buildCombinedData(updatedFiles);
-      saveProjectData(projectId, combined);
-    } catch (e) {
-      setError(e.message);
+      const settled = await Promise.allSettled(Array.from(newFiles).map(processFile));
+      const succeeded = settled.filter(r => r.status === 'fulfilled').map(r => r.value);
+      const failed = settled.filter(r => r.status === 'rejected').map(r => r.reason.message);
+
+      if (succeeded.length > 0) {
+        const updatedFiles = [...files, ...succeeded];
+        setFiles(updatedFiles);
+        updateProject(projectId, { files: updatedFiles.map(f => ({ name: f.name, type: f.type, vcenterName: f.vcenterName })) });
+        saveProjectData(projectId, buildCombinedData(updatedFiles));
+      }
+      if (failed.length > 0) {
+        setError(failed.join(' | '));
+      }
     } finally {
       setParsing(false);
     }
@@ -116,6 +128,7 @@ export default function Project() {
           background: dragOver ? 'rgba(0,196,180,0.04)' : 'var(--gray-50)',
           marginBottom: 24,
           transition: 'all 0.15s',
+          pointerEvents: parsing ? 'none' : 'auto',
         }}
       >
         <Upload size={28} color="var(--gray-400)" style={{ marginBottom: 12 }} />
@@ -129,6 +142,7 @@ export default function Project() {
           Browse files
           <input
             type="file" accept=".xlsx" multiple hidden
+            disabled={parsing}
             onChange={e => handleFiles(e.target.files)}
           />
         </label>
