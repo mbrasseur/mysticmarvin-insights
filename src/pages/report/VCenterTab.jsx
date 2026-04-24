@@ -92,7 +92,7 @@ export function VCenterTab({ vc, allVCs }) {
               padding: '9px 16px', fontSize: 12, fontWeight: 600,
               background: 'none', border: 'none', cursor: 'pointer',
               color: subTab === tab.id ? 'var(--navy)' : 'var(--gray-500)',
-              borderBottom: subTab === tab.id ? '2px solid var(--red)' : '2px solid transparent',
+              borderBottom: subTab === tab.id ? '2px solid var(--accent)' : '2px solid transparent',
               marginBottom: -2,
             }}
           >

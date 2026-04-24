@@ -31,7 +31,7 @@ export default function Report() {
 
   if (!rawData?.vcenters?.length) return (
     <div style={{ padding: 32, color: 'var(--gray-500)' }}>
-      No data found for this project. <a href="#/" style={{ color: 'var(--red)' }}>Go home</a>
+      No data found for this project. <a href="#/" style={{ color: 'var(--accent)' }}>Return to Projects</a>
     </div>
   );
 
@@ -43,6 +43,7 @@ export default function Report() {
         <div style={{ padding: '8px 24px', background: 'var(--gray-50)', borderBottom: '1px solid var(--gray-200)' }}>
           <button
             onClick={() => setDrillVC(null)}
+            aria-label="Back to Infrastructure"
             style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: 'var(--gray-500)', fontWeight: 600 }}
           >
             <ArrowLeft size={13} /> Back to Infrastructure
@@ -126,8 +127,8 @@ function ScopeBar({ vcenters, scope, onScopeChange }) {
         return (
           <button key={name} onClick={() => onScopeChange({ vcenter: name, datacenter: null, cluster: null })} style={{
             padding: '8px 12px', fontSize: 11, fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer',
-            color: isActive ? 'var(--red)' : 'var(--gray-500)',
-            borderBottom: isActive ? '2px solid var(--red)' : '2px solid transparent',
+            color: isActive ? 'var(--accent)' : 'var(--gray-500)',
+            borderBottom: isActive ? '2px solid var(--accent)' : '2px solid transparent',
             whiteSpace: 'nowrap',
           }}>
             {short}
@@ -152,7 +153,7 @@ function FleetBanner({ fleet, scopeLabel }) {
   return (
     <div style={{
       background: 'linear-gradient(150deg, var(--navy-dark) 0%, var(--navy) 60%, var(--navy-mid) 100%)',
-      borderBottom: '2px solid var(--red)', padding: '16px 24px',
+      borderBottom: '2px solid var(--accent)', padding: '16px 24px',
     }}>
       <div style={{ marginBottom: 10 }}>
         <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
@@ -162,7 +163,7 @@ function FleetBanner({ fleet, scopeLabel }) {
       <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
         {kpis.map(k => (
           <div key={k.label} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <span style={{ fontSize: 20, fontWeight: 700, fontFamily: 'var(--mono)', color: k.warn ? '#FF4F41' : '#ffffff' }}>{k.value}</span>
+            <span style={{ fontSize: 20, fontWeight: 700, fontFamily: 'var(--mono)', color: k.warn ? 'var(--warn)' : 'var(--white)' }}>{k.value}</span>
             <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{k.label}</span>
           </div>
         ))}

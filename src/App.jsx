@@ -1,5 +1,6 @@
 import { HashRouter, Routes, Route, Outlet } from 'react-router-dom';
 import { AppShell } from './components/Layout';
+import ErrorBoundary from './components/ErrorBoundary';
 import Home from './pages/Home';
 import Project from './pages/Project';
 import Report from './pages/Report';
@@ -8,7 +9,9 @@ import './theme.css';
 function AppLayout() {
   return (
     <AppShell>
-      <Outlet />
+      <ErrorBoundary>
+        <Outlet />
+      </ErrorBoundary>
     </AppShell>
   );
 }

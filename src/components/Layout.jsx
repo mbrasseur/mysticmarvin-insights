@@ -30,9 +30,9 @@ function TopBar() {
           background: 'var(--topbar-border)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
-          <span style={{ color: '#0a2332', fontSize: 13, fontWeight: 900 }}>M</span>
+          <span style={{ color: 'var(--navy)', fontSize: 13, fontWeight: 900 }}>M</span>
         </div>
-        <span style={{ color: '#ffffff', fontSize: 14, fontWeight: 700, letterSpacing: '0.02em' }}>
+        <span style={{ color: 'var(--white)', fontSize: 14, fontWeight: 700, letterSpacing: '0.02em' }}>
           MysticMarvin Insights
         </span>
       </Link>

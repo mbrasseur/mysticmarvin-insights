@@ -121,7 +121,7 @@ export default function Project() {
         onDragOver={e => { e.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
         style={{
-          border: `2px dashed ${dragOver ? 'var(--red)' : 'var(--gray-300)'}`,
+          border: `2px dashed ${dragOver ? 'var(--accent)' : 'var(--gray-300)'}`,
           borderRadius: 'var(--radius-lg)',
           padding: '40px 24px',
           textAlign: 'center',
@@ -136,7 +136,7 @@ export default function Project() {
         <div style={{ color: 'var(--gray-400)', fontSize: 12, marginBottom: 16 }}>or</div>
         <label style={{
           display: 'inline-block', padding: '8px 20px',
-          background: 'var(--red)', color: '#fff',
+          background: 'var(--accent)', color: '#fff',
           borderRadius: 'var(--radius)', cursor: 'pointer', fontSize: 13, fontWeight: 600,
         }}>
           Browse files
@@ -172,7 +172,7 @@ export default function Project() {
               border: '1px solid var(--gray-200)', marginBottom: 6,
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <FileSpreadsheet size={14} color="var(--red)" />
+                <FileSpreadsheet size={14} color="var(--accent)" />
                 <div>
                   <div style={{ fontSize: 12, fontWeight: 600 }}>{f.name}</div>
                   <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>
@@ -180,7 +180,11 @@ export default function Project() {
                   </div>
                 </div>
               </div>
-              <button onClick={() => removeFile(i)} style={{ background: 'none', border: 'none', color: 'var(--gray-400)', cursor: 'pointer' }}>
+              <button
+                onClick={() => removeFile(i)}
+                aria-label={`Remove file ${f.name}`}
+                style={{ background: 'none', border: 'none', color: 'var(--gray-400)', cursor: 'pointer' }}
+              >
                 <Trash2 size={13} />
               </button>
             </div>
@@ -193,7 +197,7 @@ export default function Project() {
           onClick={() => navigate(`/projects/${projectId}/report`)}
           style={{
             display: 'flex', alignItems: 'center', gap: 8,
-            padding: '10px 24px', background: 'var(--red)',
+            padding: '10px 24px', background: 'var(--accent)',
             color: '#fff', border: 'none', borderRadius: 'var(--radius)',
             fontSize: 14, fontWeight: 700, cursor: 'pointer',
           }}

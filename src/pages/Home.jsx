@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PlusCircle, Trash2, FolderOpen } from 'lucide-react';
+import { PlusCircle, Trash2, FolderOpen, AlertTriangle, X } from 'lucide-react';
 import { listProjects, createProject, deleteProject } from '../storage/index.js';
 
 export default function Home() {
   const [projects, setProjects] = useState(() => listProjects());
   const [newName, setNewName] = useState('');
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const navigate = useNavigate();
 
   function handleCreate(e) {
@@ -17,10 +18,9 @@ export default function Home() {
     navigate(`/projects/${p.id}`);
   }
 
-  function handleDelete(id, e) {
-    e.stopPropagation();
-    if (!confirm('Delete this project?')) return;
+  function handleDelete(id) {
     deleteProject(id);
+    setConfirmDeleteId(null);
     setProjects(listProjects());
   }
 
@@ -38,10 +38,10 @@ export default function Home() {
           value={newName}
           onChange={e => setNewName(e.target.value)}
           placeholder="New project name…"
+          aria-label="New project name"
           style={{
             flex: 1, padding: '8px 12px', borderRadius: 'var(--radius)',
             border: '1px solid var(--gray-200)', fontSize: 13,
-            outline: 'none',
           }}
         />
         <button
@@ -49,7 +49,7 @@ export default function Home() {
           style={{
             display: 'flex', alignItems: 'center', gap: 6,
             padding: '8px 16px', borderRadius: 'var(--radius)',
-            background: 'var(--red)', color: '#fff',
+            background: 'var(--accent)', color: '#fff',
             border: 'none', fontSize: 13, fontWeight: 600,
           }}
         >
@@ -64,31 +64,71 @@ export default function Home() {
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {projects.map(p => (
-            <div
-              key={p.id}
-              onClick={() => navigate(`/projects/${p.id}`)}
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: '14px 16px', borderRadius: 'var(--radius)',
-                background: '#fff', border: '1px solid var(--gray-200)',
-                cursor: 'pointer', boxShadow: 'var(--shadow)',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <FolderOpen size={16} color="var(--red)" />
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: 13 }}>{p.name}</div>
-                  <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>
-                    {p.files?.length || 0} file(s) · Created {new Date(p.createdAt).toLocaleDateString()}
+            <div key={p.id}>
+              <div
+                onClick={() => confirmDeleteId !== p.id && navigate(`/projects/${p.id}`)}
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  padding: '14px 16px', borderRadius: confirmDeleteId === p.id ? 'var(--radius) var(--radius) 0 0' : 'var(--radius)',
+                  background: '#fff', border: '1px solid var(--gray-200)',
+                  borderBottom: confirmDeleteId === p.id ? 'none' : '1px solid var(--gray-200)',
+                  cursor: confirmDeleteId === p.id ? 'default' : 'pointer',
+                  boxShadow: 'var(--shadow)',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <FolderOpen size={16} color="var(--accent)" />
+                  <div>
+                    <div style={{ fontWeight: 600, fontSize: 13 }}>{p.name}</div>
+                    <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>
+                      {p.files?.length || 0} file(s) · Created {new Date(p.createdAt).toLocaleDateString()}
+                    </div>
                   </div>
                 </div>
+                <button
+                  onClick={e => { e.stopPropagation(); setConfirmDeleteId(confirmDeleteId === p.id ? null : p.id); }}
+                  aria-label={`Delete project ${p.name}`}
+                  style={{ background: 'none', border: 'none', color: 'var(--gray-400)', padding: 4 }}
+                >
+                  <Trash2 size={14} />
+                </button>
               </div>
-              <button
-                onClick={e => handleDelete(p.id, e)}
-                style={{ background: 'none', border: 'none', color: 'var(--gray-400)', padding: 4 }}
-              >
-                <Trash2 size={14} />
-              </button>
+
+              {confirmDeleteId === p.id && (
+                <div style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  padding: '10px 16px', background: '#fff5f5',
+                  border: '1px solid var(--gray-200)', borderTop: '1px solid #fee2e2',
+                  borderRadius: '0 0 var(--radius) var(--radius)',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#991b1b' }}>
+                    <AlertTriangle size={13} /> Delete "{p.name}"? This cannot be undone.
+                  </div>
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <button
+                      onClick={() => handleDelete(p.id)}
+                      aria-label={`Confirm delete project ${p.name}`}
+                      style={{
+                        padding: '4px 12px', borderRadius: 'var(--radius)', border: 'none',
+                        background: 'var(--danger)', color: '#fff', fontSize: 12, fontWeight: 600,
+                      }}
+                    >
+                      Delete
+                    </button>
+                    <button
+                      onClick={() => setConfirmDeleteId(null)}
+                      aria-label="Cancel delete"
+                      style={{
+                        padding: '4px 12px', borderRadius: 'var(--radius)',
+                        border: '1px solid var(--gray-200)', background: '#fff',
+                        fontSize: 12, color: 'var(--gray-600)',
+                      }}
+                    >
+                      <X size={12} />
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
