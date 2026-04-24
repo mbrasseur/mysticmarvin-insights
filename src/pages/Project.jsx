@@ -121,23 +121,25 @@ export default function Project() {
         onDragOver={e => { e.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
         style={{
-          border: `2px dashed ${dragOver ? 'var(--accent)' : 'var(--gray-300)'}`,
+          border: `2px dashed ${dragOver ? 'var(--teal)' : 'rgba(0,196,180,0.25)'}`,
           borderRadius: 'var(--radius-lg)',
           padding: '40px 24px',
           textAlign: 'center',
-          background: dragOver ? 'rgba(0,196,180,0.04)' : 'var(--gray-50)',
+          background: dragOver ? 'rgba(0,196,180,0.06)' : 'var(--bg-surface)',
           marginBottom: 24,
           transition: 'all 0.15s',
           pointerEvents: parsing ? 'none' : 'auto',
         }}
       >
-        <Upload size={28} color="var(--gray-400)" style={{ marginBottom: 12 }} />
-        <div style={{ fontWeight: 600, marginBottom: 6 }}>Drop VHST or RVTools xlsx files here</div>
-        <div style={{ color: 'var(--gray-400)', fontSize: 12, marginBottom: 16 }}>or</div>
+        <Upload size={28} color="var(--text-muted)" style={{ marginBottom: 12 }} />
+        <div style={{ fontWeight: 600, marginBottom: 6, color: 'var(--text-primary)' }}>Drop VHST or RVTools xlsx files here</div>
+        <div style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)', marginBottom: 16 }}>or</div>
         <label style={{
           display: 'inline-block', padding: '8px 20px',
-          background: 'var(--accent)', color: '#fff',
-          borderRadius: 'var(--radius)', cursor: 'pointer', fontSize: 13, fontWeight: 600,
+          background: 'linear-gradient(135deg, var(--teal), var(--teal-dim))',
+          color: 'var(--bg-deep)',
+          borderRadius: 'var(--radius)', cursor: 'pointer',
+          fontSize: 'var(--text-sm)', fontWeight: 700,
         }}>
           Browse files
           <input
@@ -149,33 +151,35 @@ export default function Project() {
       </div>
 
       {parsing && (
-        <div style={{ padding: '12px 16px', background: '#fff', borderRadius: 'var(--radius)', marginBottom: 16, color: 'var(--gray-500)' }}>
-          Parsing files…
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 16px', background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', marginBottom: 16, color: 'var(--text-muted)', fontSize: 'var(--text-sm)' }}>
+          <span className="spinner" />
+          Parsing files… Cela peut prendre un moment pour les gros exports.
         </div>
       )}
 
       {error && (
-        <div style={{ padding: '12px 16px', background: '#fef2f2', borderRadius: 'var(--radius)', marginBottom: 16, color: 'var(--danger)' }}>
+        <div style={{ padding: '12px 16px', background: 'rgba(239,68,68,0.10)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 'var(--radius)', marginBottom: 16, color: 'var(--status-danger)', fontSize: 'var(--text-sm)' }}>
           {error}
         </div>
       )}
 
       {files.length > 0 && (
         <div style={{ marginBottom: 24 }}>
-          <div style={{ fontWeight: 600, fontSize: 12, color: 'var(--gray-500)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
+          <div style={{ fontWeight: 600, fontSize: 'var(--text-xs)', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
             Imported files
           </div>
           {files.map((f, i) => (
             <div key={i} style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '10px 14px', background: '#fff', borderRadius: 'var(--radius)',
-              border: '1px solid var(--gray-200)', marginBottom: 6,
+              padding: '10px 14px', background: 'var(--bg-surface)',
+              borderRadius: 'var(--radius)',
+              border: '1px solid var(--border-subtle)', marginBottom: 6,
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <FileSpreadsheet size={14} color="var(--accent)" />
+                <FileSpreadsheet size={14} color="var(--teal)" />
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 600 }}>{f.name}</div>
-                  <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>
+                  <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>{f.name}</div>
+                  <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
                     {f.type.toUpperCase()} · {f.vcenterName || 'unknown vCenter'}
                   </div>
                 </div>
@@ -183,7 +187,7 @@ export default function Project() {
               <button
                 onClick={() => removeFile(i)}
                 aria-label={`Remove file ${f.name}`}
-                style={{ background: 'none', border: 'none', color: 'var(--gray-400)', cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
               >
                 <Trash2 size={13} />
               </button>
@@ -195,11 +199,16 @@ export default function Project() {
       {hasData && (
         <button
           onClick={() => navigate(`/projects/${projectId}/report`)}
+          onMouseEnter={e => e.currentTarget.style.filter='brightness(1.1)'}
+          onMouseLeave={e => e.currentTarget.style.filter=''}
           style={{
             display: 'flex', alignItems: 'center', gap: 8,
-            padding: '10px 24px', background: 'var(--accent)',
-            color: '#fff', border: 'none', borderRadius: 'var(--radius)',
-            fontSize: 14, fontWeight: 700, cursor: 'pointer',
+            padding: '10px 24px',
+            background: 'linear-gradient(135deg, var(--teal), var(--teal-dim))',
+            color: 'var(--bg-deep)', border: 'none',
+            borderRadius: 'var(--radius)',
+            fontSize: 'var(--text-md)', fontWeight: 700, cursor: 'pointer',
+            transition: 'filter 0.12s ease',
           }}
         >
           <BarChart2 size={16} /> View Report <ChevronRight size={14} />
