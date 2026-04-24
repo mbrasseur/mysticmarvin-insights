@@ -1,12 +1,12 @@
 export function StatusDot({ status }) {
   const colors = {
-    GREEN: 'var(--green)', YELLOW: '#ca8a04', RED: 'var(--danger)',
-    NORMAL: 'var(--green)', OK: 'var(--green)',
+    GREEN: 'var(--status-ok)', YELLOW: 'var(--status-warn)', RED: 'var(--status-danger)',
+    ORANGE: 'var(--orange)', NORMAL: 'var(--status-ok)', OK: 'var(--status-ok)',
   };
   return (
     <span style={{
       display: 'inline-block', width: 8, height: 8, borderRadius: '50%',
-      background: colors[status?.toUpperCase()] || 'var(--gray-300)',
+      background: colors[status?.toUpperCase()] || 'var(--text-muted)',
     }} />
   );
 }

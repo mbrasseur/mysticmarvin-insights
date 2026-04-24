@@ -12,12 +12,15 @@ function getCSSVar(name) {
 }
 
 export const COLORS = {
-  get navy() { return getCSSVar('--navy') || '#0a2332'; },
-  get red() { return getCSSVar('--red') || '#dc2626'; },
-  get teal() { return getCSSVar('--teal') || '#1a4a5a'; },
-  green: '#16a34a', yellow: '#ca8a04', orange: '#ea580c', danger: '#dc2626',
-  navyAlpha: (a) => { const v = getCSSVar('--navy') || '#0a2332'; return v + Math.round(a * 255).toString(16).padStart(2, '0'); },
-  tealAlpha: (a) => { const v = getCSSVar('--teal') || '#1a4a5a'; return v + Math.round(a * 255).toString(16).padStart(2, '0'); },
+  get navy()  { return getCSSVar('--bg-surface') || '#0f2422'; },
+  get teal()  { return getCSSVar('--teal')       || '#00c4b4'; },
+  get accent(){ return getCSSVar('--teal')       || '#00c4b4'; },
+  green:  '#22c55e',
+  yellow: '#f59e0b',
+  orange: '#f97316',
+  danger: '#ef4444',
+  navyAlpha: (a) => `rgba(15,36,34,${a})`,
+  tealAlpha: (a) => `rgba(0,196,180,${a})`,
 };
 
 export const OC_COLORS = (pct) => {
