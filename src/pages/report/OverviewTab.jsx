@@ -13,11 +13,11 @@ function daysUntil(isoDate) {
 }
 
 function eosColor(days) {
-  if (days === null) return 'var(--gray-400)';
-  if (days < 0)   return 'var(--danger)';
+  if (days === null) return 'var(--text-muted)';
+  if (days < 0)   return 'var(--status-danger)';
   if (days < 180) return 'var(--orange)';
-  if (days < 365) return 'var(--yellow)';
-  return 'var(--green)';
+  if (days < 365) return 'var(--status-warn)';
+  return 'var(--status-ok)';
 }
 
 export function OverviewTab({ fleet, vcenters, allVcenters }) {

@@ -260,8 +260,8 @@ function ClusterSection({ vcenters }) {
               {scatterPoints.map((p, i) => (
                 <div key={i} title={p.label} style={{
                   padding: '4px 8px', borderRadius: 4, fontSize: 10, fontFamily: 'var(--mono)',
-                  background: parseFloat(p.x) > 80 || parseFloat(p.y) > 80 ? 'var(--danger)' : parseFloat(p.x) > 60 || parseFloat(p.y) > 60 ? 'var(--yellow)' : 'var(--green)',
-                  color: '#fff', fontWeight: 600,
+                  background: parseFloat(p.x) > 80 || parseFloat(p.y) > 80 ? 'var(--status-danger)' : parseFloat(p.x) > 60 || parseFloat(p.y) > 60 ? 'var(--status-warn)' : 'var(--status-ok)',
+                  color: 'var(--text-primary)', fontWeight: 600,
                 }}>
                   CPU {p.x}% / RAM {p.y}%
                 </div>
@@ -464,7 +464,7 @@ function DVSSection({ vcenters }) {
             centerText={{ value: allDVS.length, label: 'DVSwitches' }}
           />
         </div>
-        <div className="card" style={{ background: 'var(--gray-50)', borderLeft: '3px solid var(--navy)' }}>
+        <div className="card" style={{ background: 'var(--bg-surface)', borderLeft: '3px solid var(--navy)' }}>
           <div className="section-header">Guidance & References</div>
           <p style={{ fontSize: 12, color: 'var(--gray-600)', lineHeight: 1.7 }}>
             Distributed Virtual Switches should be kept at or above the vSphere version in use. Mixing DVS versions across a cluster can limit vMotion compatibility.

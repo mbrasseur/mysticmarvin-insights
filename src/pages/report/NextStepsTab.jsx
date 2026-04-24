@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { AlertTriangle, AlertCircle, Info, CheckCircle, ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
 
 const PRIORITY = {
-  critical: { icon: AlertTriangle, color: 'var(--danger)', bg: '#fff5f5', border: 'var(--danger)', label: 'Critical' },
-  high:     { icon: AlertCircle,   color: 'var(--orange)', bg: '#fff7ed', border: 'var(--orange)', label: 'High' },
-  medium:   { icon: Info,          color: 'var(--yellow)', bg: '#fffbeb', border: '#f59e0b',       label: 'Medium' },
-  positive: { icon: CheckCircle,   color: 'var(--green)',  bg: '#f0fdf4', border: 'var(--green)',  label: 'Good' },
+  critical: { icon: AlertTriangle, color: 'var(--danger)', bg: 'rgba(239,68,68,0.08)', border: 'var(--danger)', label: 'Critical' },
+  high:     { icon: AlertCircle,   color: 'var(--orange)', bg: 'rgba(249,115,22,0.08)', border: 'var(--orange)', label: 'High' },
+  medium:   { icon: Info,          color: 'var(--yellow)', bg: 'rgba(245,158,11,0.08)', border: '#f59e0b',       label: 'Medium' },
+  positive: { icon: CheckCircle,   color: 'var(--green)',  bg: 'rgba(34,197,94,0.08)',  border: 'var(--green)',  label: 'Good' },
 };
 
 export function NextStepsTab({ fleet, vcenters }) {
@@ -101,21 +101,21 @@ function FindingCard({ item, cfg }) {
 
       {/* Inline drill-down table */}
       {hasDetails && expanded && (
-        <div style={{ borderTop: `1px solid ${cfg.border}`, background: 'rgba(255,255,255,0.7)', padding: '12px 16px' }}>
+        <div style={{ borderTop: `1px solid ${cfg.border}`, background: 'var(--bg-surface)', padding: '12px 16px' }}>
           <table className="data-table" style={{ fontSize: 11 }}>
             <thead>
               <tr>
                 {item.details.columns.map(col => (
-                  <th key={col} style={{ background: 'var(--navy)', color: '#fff', padding: '5px 8px', fontSize: 10 }}>{col}</th>
+                  <th key={col} style={{ background: 'var(--bg-base)', color: 'var(--text-primary)', padding: '5px 8px', fontSize: 10 }}>{col}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {item.details.rows.map((row, i) => (
-                <tr key={i} style={{ background: i % 2 === 0 ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.4)' }}>
+                <tr key={i} style={{ background: i % 2 === 0 ? 'var(--bg-base)' : 'var(--bg-hover)' }}>
                   {row.map((cell, j) => (
                     <td key={j} style={{
-                      padding: '4px 8px', borderBottom: '1px solid rgba(0,0,0,0.05)',
+                      padding: '4px 8px', borderBottom: '1px solid var(--border-subtle)',
                       fontFamily: j > 0 ? 'var(--mono)' : 'inherit',
                       fontWeight: item.details.highlightCol === j ? 700 : 400,
                       color: item.details.colorCol === j ? colorForValue(cell) : 'inherit',
@@ -137,10 +137,10 @@ function colorForValue(val) {
   const str = String(val).replace('%', '');
   const n = parseFloat(str);
   if (isNaN(n)) return 'inherit';
-  if (n >= 200) return '#dc2626';
-  if (n >= 130) return '#ea580c';
-  if (n >= 100) return '#d97706';
-  return '#16a34a';
+  if (n >= 200) return 'var(--status-danger)';
+  if (n >= 130) return 'var(--orange)';
+  if (n >= 100) return 'var(--status-warn)';
+  return 'var(--status-ok)';
 }
 
 export function generateFindings(fleet, vcenters) {

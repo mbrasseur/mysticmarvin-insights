@@ -506,7 +506,7 @@ function VMsSubTab({ vc }) {
             { v: tools.notInstalled, l: 'Not Installed', c: 'var(--danger)' },
             { v: tools.notRunning, l: 'Not Running', c: 'var(--orange)' },
           ].map(k => (
-            <div key={k.l} style={{ textAlign: 'center', padding: '10px', background: 'var(--gray-50)', borderRadius: 'var(--radius)' }}>
+            <div key={k.l} style={{ textAlign: 'center', padding: '10px', background: 'var(--bg-surface)', borderRadius: 'var(--radius)' }}>
               <div style={{ fontSize: 20, fontWeight: 700, fontFamily: 'var(--mono)', color: k.c }}>{k.v}</div>
               <div style={{ fontSize: 10, color: 'var(--gray-400)', textTransform: 'uppercase' }}>{k.l}</div>
             </div>
