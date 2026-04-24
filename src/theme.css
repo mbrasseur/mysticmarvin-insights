@@ -90,6 +90,9 @@ input, select, textarea { font-family: var(--font); }
 ::-webkit-scrollbar-track { background: var(--bg-surface); }
 ::-webkit-scrollbar-thumb { background: rgba(0,196,180,0.3); border-radius: 3px; }
 
+/* ── Mono utility ────────────────────── */
+.mono { font-family: var(--mono); }
+
 /* ── Card ────────────────────────────── */
 .card {
   background: var(--bg-surface);
